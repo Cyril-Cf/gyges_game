@@ -1,0 +1,21 @@
+[package]
+name = "gyges_game"
+version = "0.1.0"
+authors = ["Cyril Couffe <cyril.couffe@yahoo.fr>"]
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+strum = "0.25"
+strum_macros = "0.25"
+gloo = "0.10"
+nanoid = "0.4"
+rand = "0.8"
+getrandom = { version = "0.2", features = ["js"] }
+yew = { version="0.21.0", features = ["csr"] }
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+	"HtmlInputElement",
+]
