@@ -628,6 +628,7 @@ dependencies = [
  "serde",
  "strum",
  "strum_macros",
+ "wasm-bindgen",
  "web-sys",
  "yew",
 ]

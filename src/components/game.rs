@@ -1,8 +1,6 @@
-use yew::{function_component, html, Html, Properties};
-use gloo_console::log;
-
-use crate::state::Pawn;
 use crate::components::pawn::PawnRender;
+use crate::state::Pawn;
+use yew::prelude::*;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -11,20 +9,11 @@ pub struct Props {
 
 #[function_component(Game)]
 pub fn game(props: &Props) -> Html {
-    let Props {
-        board
-    } = props.clone();
+    let Props { board } = props.clone();
 
-
-    // let input_value_handle = use_state(String::default);
-    // let input_value = (*input_value_handle).clone();
-
-    // let onmouseenter = move |e: MouseEvent| {
-    //     e.stop_propagation();
-    // };
-    log!("Testing..");
-
-
+    let onclick = Callback::from(move |_: MouseEvent| {
+        gloo_console::log!("Testing click!");
+    });
     html! {
         <section id="game">
             <div class="finish_line" id="player1_finish">
@@ -34,7 +23,7 @@ pub fn game(props: &Props) -> Html {
             {
                 board.into_iter().map(|option| {
                     match option {
-                        Some(pawn) => html!{<PawnRender pawn={pawn} />},
+                        Some(pawn) => html!{<PawnRender pawn={pawn} onclick={onclick.clone()} />},
                         None => html!{<div class="grid-item"></div>}
                     }
                 }).collect::<Html>()
