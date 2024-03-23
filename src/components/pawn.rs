@@ -28,8 +28,6 @@ pub fn pawn_render(props: &Props) -> Html {
                 Player::PlayerTwo => "player2",
             };
 
-            gloo_console::log!("testing log");
-
             html! {
                 <div class="grid-item" onclick={onclick.clone()} >
                     <div class={classes!(player, "pawn")}>
