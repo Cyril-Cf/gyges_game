@@ -1,2 +1,43 @@
 body
-    color: blue
+    margin: 0
+    text-align: center
+    padding: 0 100px
+    header
+        height: 10vh
+    main
+        display: flex
+        justify-content: center
+        align-items: center
+        section#game
+            width: 570px
+            min-width: 570px
+            padding: 0 25px
+            .grid-container
+                display: flex
+                align-items: center
+                justify-content: center
+                flex-wrap: wrap
+            .grid-item
+                background-color: #ddd
+                width: 85px
+                margin: 5px
+                height: 85px
+                border-radius: 50px 
+                display: flex
+                justify-content: center
+                align-items: center
+                .pawn
+                    cursor: grab
+                .player1
+                    color: red
+                .player2
+                    color: blue
+            .finish_line
+                display: flex
+                justify-content: center
+        aside
+            width: 30%
+            section#game_infos
+            section#rules
+    footer
+        height: 10vh

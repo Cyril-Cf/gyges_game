@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  text-align: center;
+  padding: 0 100px;
+}
+body header {
+  height: 10vh;
+}
+body main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body main section#game {
+  width: 570px;
+  min-width: 570px;
+  padding: 0 25px;
+}
+body main section#game .grid-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+body main section#game .grid-item {
+  background-color: #ddd;
+  width: 85px;
+  margin: 5px;
+  height: 85px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body main section#game .grid-item .pawn {
+  cursor: grab;
+}
+body main section#game .grid-item .player1 {
+  color: red;
+}
+body main section#game .grid-item .player2 {
+  color: blue;
+}
+body main section#game .finish_line {
+  display: flex;
+  justify-content: center;
+}
+body main aside {
+  width: 30%;
+}
+body footer {
+  height: 10vh;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22../../sass/index.sass%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAA;EACI;EACA;EACA;;AACA;EACI;;AACJ;EACI;EACA;EACA;;AACA;EACI;EACA;EACA;;AACA;EACI;EACA;EACA;EACA;;AACJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AACA;EACI;;AACJ;EACI;;AACJ;EACI;;AACR;EACI;EACA;;AACR;EACI;;AAGR;EACI%22,%22file%22:%22index.css%22%7D */
