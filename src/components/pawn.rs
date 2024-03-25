@@ -1,22 +1,25 @@
 use crate::constant::PawnType;
 use crate::constant::Player;
+use crate::entities::board::Pawn;
+use crate::entities::board::Square;
 use crate::stores::game_state::GameState;
-use crate::stores::game_state::Pawn;
 use yew::prelude::*;
 use yewdux::prelude::*;
 
-#[derive(Properties, Clone, PartialEq)]
+#[derive(Properties, PartialEq)]
 pub struct Props {
+    pub square: Square,
     pub pawn: Option<Pawn>,
-    pub index: usize
 }
+
 
 #[function_component(PawnRender)]
 pub fn pawn_render(props: &Props) -> Html {
-    let Props { pawn, index } = props.clone();
+    let Props { square, pawn } = props;
     let (_, dispatch) = use_store::<GameState>();
+    let square = square.clone();
     let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
-        state_store.select_or_move_pawn(index);
+        state_store.select_or_move_pawn(square);
     });
 
     match pawn {
@@ -48,5 +51,4 @@ pub fn pawn_render(props: &Props) -> Html {
             }
         }
     }
-
 }

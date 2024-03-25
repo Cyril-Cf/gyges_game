@@ -14,11 +14,13 @@ pub fn game() -> Html {
             </div>
             <div class="grid-container">
             {
-                state.board.into_iter().enumerate().map(|(index, option)| {
-                    match option {
-                        Some(pawn) => html!{<PawnRender {pawn} {index} />},
-                        None => html!{<div class="grid-item"></div>}
-                    }
+                state.board.lines.into_iter().filter(|l| !l.is_hidden).map(|line| {
+                    line.squares.into_iter().map(|square| {
+                        match square.pawn {
+                            Some(pawn) => html!{<PawnRender {pawn} {square} />},
+                            None => html!{<div class="grid-item"></div>}
+                        }
+                    }).collect::<Html>()
                 }).collect::<Html>()
             }
             </div>

@@ -2,6 +2,7 @@ mod components;
 mod constant;
 mod helper;
 mod stores;
+mod entities;
 
 use crate::components::app::App;
 
