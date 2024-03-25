@@ -17,14 +17,25 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn move_pawn(&mut self, pawn_to_move: usize, position_after: usize) {
+    pub fn select_or_move_pawn(&mut self, index: usize) {
+        if self.pawn_to_move.is_none() {
+            self.toogle_pawn_highlight(index);
+            self.pawn_to_move = Some(index);
+        } else if index == self.pawn_to_move.unwrap() {
+            self.toogle_pawn_highlight(index);
+            self.pawn_to_move = None;
+        } else {
+            self.move_pawn(index, self.pawn_to_move.unwrap());
+            self.toogle_pawn_highlight(index);
+            self.pawn_to_move = None;
+        }
+    }
+    fn move_pawn(&mut self, pawn_to_move: usize, position_after: usize) {
         self.board.swap(pawn_to_move, position_after);
     }
 
-    pub fn toogle_pawn_highlight(&mut self, index: usize) {
-        self.board.get_mut(index).unwrap().unwrap().is_highlighted = true;
-        // self.board.get_mut(index).unwrap().unwrap().is_highlighted = self.board.get(index).unwrap().unwrap().is_highlighted;
-        gloo_console::log!(self.board.get(index).unwrap().unwrap().is_highlighted);
+    fn toogle_pawn_highlight(&mut self, index: usize) {
+        self.board[index].as_mut().unwrap().is_highlighted = !self.board.get(index).unwrap().unwrap().is_highlighted ;
     }
 
 }
@@ -39,7 +50,7 @@ impl Default for GameState {
                     player: Player::PlayerOne,
                     paywn_type: PawnType::One,
                     position: 0,
-                    is_highlighted: Default::default()
+                    is_highlighted: false
                 }),
                 Some(Pawn {
                     player: Player::PlayerOne,

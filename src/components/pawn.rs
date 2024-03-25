@@ -15,14 +15,8 @@ pub struct Props {
 pub fn pawn_render(props: &Props) -> Html {
     let Props { pawn, index } = props.clone();
     let (_, dispatch) = use_store::<GameState>();
-    let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state| {
-        state.toogle_pawn_highlight(index);
-        if state.pawn_to_move.is_none() {
-            state.pawn_to_move = Some(index);
-        } else {
-            state.move_pawn(index, state.pawn_to_move.unwrap());
-            state.pawn_to_move = None;
-        }
+    let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
+        state_store.select_or_move_pawn(index);
     });
 
     match pawn {
@@ -40,18 +34,19 @@ pub fn pawn_render(props: &Props) -> Html {
                 Player::PlayerTwo => "player2",
             };
 
-            let mut classes = classes!(player, "pawn");
+            let mut class = classes!("grid-item");
             if pawn.is_highlighted {
-                classes.push("pawn_highlighted");
+                class.push("pawn_highlighted");
             }
 
             html! {
-                <div class="grid-item" onclick={onclick.clone()} >
-                    <div class={classes}>
+                <div {class} onclick={onclick.clone()} >
+                    <div class={classes!(player, "pawn")}>
                         {text}
                     </div>
                 </div>
             }
         }
     }
+
 }
