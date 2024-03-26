@@ -19,3 +19,11 @@ pub enum GameStatus {
     Playing,
     Finished,
 }
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CheckMove {
+    Top,
+    Bottom,
+    Left,
+    Right
+}

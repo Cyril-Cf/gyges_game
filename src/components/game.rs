@@ -18,7 +18,13 @@ pub fn game() -> Html {
                     line.squares.into_iter().map(|square| {
                         match square.pawn {
                             Some(pawn) => html!{<PawnRender {pawn} {square} />},
-                            None => html!{<div class="grid-item"></div>}
+                            None => {
+                                if square.is_can_move_to {
+                                    html!{<div class="grid-item possible-move"></div>}
+                                } else {
+                                    html!{<div class="grid-item"></div>}
+                                }
+                            }
                         }
                     }).collect::<Html>()
                 }).collect::<Html>()
