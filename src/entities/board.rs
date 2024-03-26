@@ -252,6 +252,17 @@ fn activate_square_can_move_to(board: &mut Board) {
 fn check_for_moves(board: &mut Board, starting_line_index: usize, starting_square_index: usize, starting_length: usize) {
     // check all directions, for each start a tmpPath si ca peut continuer, None si ça s'arrête ou un correctPath si ça s'arrête
     check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Top, None);
+    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Bottom, None);
+    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Left, None);
+    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Right, None);
+    
+    // Recursivité pour finir tous les chemins possibles et jeter ceux qui ne finissent pas
+    // While j'ai des Tmp Path, je boucle
+    // appel à check_unit_move et je dois du coup supprimer le tmp path si false ?
+    // 
+    
+    
+    
     activate_square_can_move_to(board);
 
     for tmp_path in board.tmp_moves.clone() {
@@ -265,119 +276,142 @@ fn check_for_moves(board: &mut Board, starting_line_index: usize, starting_squar
 }
 
 fn check_unit_move(board: &mut Board, line_index: usize, square_index: usize, remaining_length: usize, direction: CheckMove, temp_path: Option<&mut TempPath>) -> bool {
+    let line_index_to = match direction {
+        CheckMove::Top => {
+            if line_index > 0 {
+                line_index - 1
+            } else {
+                0
+            }
+        },
+        CheckMove::Bottom => line_index + 1,
+        _ => line_index
+    };
+    let square_index_to = match direction {
+        CheckMove::Left => {
+            if square_index > 0 {
+                square_index - 1
+            } else {
+                0
+            }
+        },
+        CheckMove::Right => square_index + 1, 
+        _ => square_index
+    };
+
     match direction {
         CheckMove::Top => {
-            if line_index > 1 {
-                // If next square is free (no pawn)
-                if board.lines.get(line_index - 1).unwrap().squares.get(square_index).unwrap().pawn.is_none() {
-                    // If player had still moves to complete
-                    if remaining_length > 1 {
-                        // If we're in an already started temp path, then add another move to it
-                        if temp_path.is_some() {
-                            temp_path.unwrap().moves.push(Move{
-                                line_index_from: line_index,
-                                line_index_to: line_index - 1,
-                                square_index_from: square_index,
-                                square_index_to: square_index,
-                            });
-                            return true;
-                        // If we're starting a new temp path, create one that is unfinished
-                        } else {
-                            board.tmp_moves.push(TempPath {
-                                moves: vec![
-                                    Move{
-                                        line_index_from: line_index,
-                                        line_index_to: line_index - 1,
-                                        square_index_from: square_index,
-                                        square_index_to: square_index,
-                                    }
-                                ],
-                                is_finished: false,
-                                remaining_length: remaining_length -1,
-                            });
-                            return true;
-                        }
-                    // If player had to end the move
-                    } else {
-                        if temp_path.is_some() {
-                            // remove temp path from board
-                            let temp_path = temp_path.unwrap().clone();
-                            if let Some(index) = board.tmp_moves.iter().position(|t| t == &temp_path) {
-                                board.tmp_moves.remove(index);
-                            }
-                            // add this one to correct path
-                            board.possible_moves.push(temp_path.into());
-                            return true;
-                        } else {
-                            board.possible_moves.push(CorrectPath {
-                                moves: vec![
-                                    Move{
-                                        line_index_from: line_index,
-                                        line_index_to: line_index - 1,
-                                        square_index_from: square_index,
-                                        square_index_to: square_index,
-                                    }
-                                ],
-                            });
-                            return true;
-                        }
-                    }
-                // If there is a pawn on the square
-                } else {
-                    // If it's the last stop of a path, then treat that as a correct bounce
-                    if remaining_length == 1 {
-                        let new_remaining_length = match board.lines.get(line_index - 1).unwrap().squares.get(square_index).unwrap().pawn.unwrap().paywn_type {
-                            PawnType::One => 1 as usize,
-                            PawnType::Two => 2 as usize,
-                            PawnType::Three => 3 as usize,
-                        };
-
-                        // If we were already in a temp path
-                        if temp_path.is_some() {
-                            temp_path.unwrap().moves.push(Move{
-                                line_index_from: line_index,
-                                line_index_to: line_index - 1,
-                                square_index_from: square_index,
-                                square_index_to: square_index,
-                            });
-                            return true;
-                        // else, create a new one
-                        } else {
-                            board.tmp_moves.push(TempPath {
-                                moves: vec![
-                                    Move{
-                                        line_index_from: line_index,
-                                        line_index_to: line_index - 1,
-                                        square_index_from: square_index,
-                                        square_index_to: square_index,
-                                    }
-                                ],
-                                is_finished: false,
-                                remaining_length: new_remaining_length,
-                            });
-                            return true;
-                        }
-                    } else {
-                        return false
-                    }
-                }
+            if line_index == 1 {
+                return false;
             }
         },
         CheckMove::Bottom => {
-            if line_index < 6 {
-
+            if line_index == 6 {
+                return false;
             }
         },
         CheckMove::Left => {
-            if square_index < 1 {
-
+            if square_index == 0 {
+                return false;
             }
         },
         CheckMove::Right => {
-            if square_index < 5 {
-
+            if square_index == 5 {
+                return false
             }
         }
     }
-    false
+
+    if board.lines.get(line_index_to).unwrap().squares.get(square_index_to).unwrap().pawn.is_none() {
+        // If player had still moves to complete
+        if remaining_length > 1 {
+            // If we're in an already started temp path, then add another move to it
+            if temp_path.is_some() {
+                temp_path.unwrap().moves.push(Move{
+                    line_index_from: line_index,
+                    line_index_to,
+                    square_index_from: square_index,
+                    square_index_to,
+                });
+                return true;
+            // If we're starting a new temp path, create one that is unfinished
+            } else {
+                board.tmp_moves.push(TempPath {
+                    moves: vec![
+                        Move{
+                            line_index_from: line_index,
+                            line_index_to,
+                            square_index_from: square_index,
+                            square_index_to,
+                        }
+                    ],
+                    is_finished: false,
+                    remaining_length: remaining_length -1,
+                });
+                return true;
+            }
+        // If player had to end the move
+        } else {
+            if temp_path.is_some() {
+                // remove temp path from board
+                let temp_path = temp_path.unwrap().clone();
+                if let Some(index) = board.tmp_moves.iter().position(|t| t == &temp_path) {
+                    board.tmp_moves.remove(index);
+                }
+                // add this one to correct path
+                board.possible_moves.push(temp_path.into());
+                return true;
+            } else {
+                board.possible_moves.push(CorrectPath {
+                    moves: vec![
+                        Move{
+                            line_index_from: line_index,
+                            line_index_to,
+                            square_index_from: square_index,
+                            square_index_to,
+                        }
+                    ],
+                });
+                return true;
+            }
+        }
+    // If there is a pawn on the square
+    } else {
+        // If it's the last stop of a path, then treat that as a correct bounce
+        if remaining_length == 1 {
+            let new_remaining_length = match board.lines.get(line_index_to).unwrap().squares.get(square_index_to).unwrap().pawn.unwrap().paywn_type {
+                PawnType::One => 1 as usize,
+                PawnType::Two => 2 as usize,
+                PawnType::Three => 3 as usize,
+            };
+
+            // If we were already in a temp path
+            if temp_path.is_some() {
+                temp_path.unwrap().moves.push(Move{
+                    line_index_from: line_index,
+                    line_index_to,
+                    square_index_from: square_index,
+                    square_index_to,
+                });
+                return true;
+            // else, create a new one
+            } else {
+                board.tmp_moves.push(TempPath {
+                    moves: vec![
+                        Move{
+                            line_index_from: line_index,
+                            line_index_to,
+                            square_index_from: square_index,
+                            square_index_to,
+                        }
+                    ],
+                    is_finished: false,
+                    remaining_length: new_remaining_length,
+                });
+                return true;
+            }
+        } else {
+            return false
+        }
+    }
 }
