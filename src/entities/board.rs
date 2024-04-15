@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use serde::{Deserialize, Serialize};
 use serde_json;
-use web_sys::js_sys::Math::sin;
+use std::collections::HashMap;
 
 use crate::constant::{CheckMove, PawnType, Player};
 
@@ -531,42 +529,43 @@ fn check_for_moves(
                 if check_if_all_moves_are_correct(&all_moves) {
                     board.possible_moves.push(CorrectPath { moves: all_moves });
                 }
+            } else {
+                gloo::console::log!("last move");
+                gloo::console::log!(serde_json::to_string(last_move).unwrap());
+                let new_remaining_length = match board
+                    .lines
+                    .get(last_move.line_index_to)
+                    .unwrap()
+                    .squares
+                    .get(last_move.square_index_to)
+                    .unwrap()
+                    .pawn
+                    .unwrap()
+                    .paywn_type
+                {
+                    PawnType::One => 1 as usize,
+                    PawnType::Two => 2 as usize,
+                    PawnType::Three => 3 as usize,
+                };
+                for direction in CheckMove::into_iter() {
+                    if let Some(single_move) = check_unit_move(
+                        board,
+                        last_move.line_index_to,
+                        last_move.square_index_to,
+                        new_remaining_length,
+                        direction,
+                    ) {
+                        let mut all_moves = last_path.moves.clone();
+                        all_moves.push(single_move);
+                        if check_if_all_moves_are_correct(&all_moves) {
+                            board.tmp_moves.push(TempPath {
+                                remaining_length: new_remaining_length - 1,
+                                moves: all_moves,
+                            });
+                        }
+                    }
+                }
             }
-            // else {
-            //     let new_remaining_length = match board
-            //         .lines
-            //         .get(last_move.line_index_to)
-            //         .unwrap()
-            //         .squares
-            //         .get(last_move.square_index_to)
-            //         .unwrap()
-            //         .pawn
-            //         .unwrap()
-            //         .paywn_type
-            //     {
-            //         PawnType::One => 1 as usize,
-            //         PawnType::Two => 2 as usize,
-            //         PawnType::Three => 3 as usize,
-            //     };
-            //     for direction in CheckMove::into_iter() {
-            //         if let Some(single_move) = check_unit_move(
-            //             board,
-            //             last_move.line_index_to,
-            //             last_move.square_index_to,
-            //             new_remaining_length,
-            //             direction,
-            //         ) {
-            //             let mut all_moves = last_path.moves.clone();
-            //             all_moves.push(single_move);
-            //             board.tmp_moves.push(TempPath {
-            //                 remaining_length: new_remaining_length - 1,
-            //                 moves: all_moves,
-            //             })
-            //         }
-            //     }
-            // }
-
-            // Si longueur restante
         } else {
             for direction in CheckMove::into_iter() {
                 if let Some(single_move) = check_unit_move(
