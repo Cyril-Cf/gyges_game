@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_json;
 use std::collections::HashMap;
 
 use crate::constant::{CheckMove, PawnType, Player};
@@ -344,29 +343,26 @@ impl Default for Board {
 
 impl Board {
     pub fn move_pawn(&mut self, square_from: &Square, square_target: &Square) {
-        // TODO ici plutôt que swap, on va devoir verifier que c'est un square possible soit le dernier d'un CorrectPath.moves
-
-        let mut pawn_1: Option<Pawn> = None;
-        let mut pawn_2: Option<Pawn> = None;
-        if let Some(line) = self.lines.get(square_from.line_index) {
-            if let Some(square_1) = line.squares.get(square_from.pawn_index) {
-                pawn_1 = square_1.pawn;
+        if square_target.is_can_move_to {
+            let mut pawn_1: Option<Pawn> = None;
+            if let Some(line) = self.lines.get(square_from.line_index) {
+                if let Some(square_1) = line.squares.get(square_from.pawn_index) {
+                    pawn_1 = square_1.pawn;
+                }
             }
-        }
-        if let Some(line) = self.lines.get_mut(square_target.line_index) {
-            if let Some(square_2) = line.squares.get_mut(square_target.pawn_index) {
-                pawn_2 = square_2.pawn;
-                square_2.pawn = pawn_1;
+            if let Some(line) = self.lines.get_mut(square_target.line_index) {
+                if let Some(square_2) = line.squares.get_mut(square_target.pawn_index) {
+                    square_2.pawn = pawn_1;
+                }
             }
-        }
-        if let Some(line) = self.lines.get_mut(square_from.line_index) {
-            if let Some(square_1) = line.squares.get_mut(square_from.pawn_index) {
-                square_1.pawn = pawn_2;
+            if let Some(line) = self.lines.get_mut(square_from.line_index) {
+                if let Some(square_1) = line.squares.get_mut(square_from.pawn_index) {
+                    square_1.pawn = None;
+                }
             }
+            self.remove_possible_moves();
+            self.remove_temp_moves();
         }
-
-        self.remove_possible_moves();
-        self.remove_temp_moves();
     }
 
     pub fn toggle_pawn_highlight(&mut self, square: &Square) {
@@ -414,7 +410,7 @@ pub struct Line {
     pub squares: [Square; 6],
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Serialize, PartialEq, Eq)]
 pub struct Square {
     pub pawn: Option<Pawn>,
     pub line_index: usize,
@@ -422,7 +418,7 @@ pub struct Square {
     pub is_can_move_to: bool,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Serialize, PartialEq, Eq)]
 pub struct Pawn {
     pub player: Player,
     pub paywn_type: PawnType,
@@ -523,15 +519,12 @@ fn check_for_moves(
         let all_moves = last_path.moves.clone();
         let last_move = last_path.moves.last().unwrap();
 
-        // si remaining == 0 et que le square d'arrivée et vide alors correct
         if last_path.remaining_length == 0 {
             if check_if_square_empty(board, last_move.line_index_to, last_move.square_index_to) {
                 if check_if_all_moves_are_correct(&all_moves) {
                     board.possible_moves.push(CorrectPath { moves: all_moves });
                 }
             } else {
-                gloo::console::log!("last move");
-                gloo::console::log!(serde_json::to_string(last_move).unwrap());
                 let new_remaining_length = match board
                     .lines
                     .get(last_move.line_index_to)
