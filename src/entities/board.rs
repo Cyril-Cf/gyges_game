@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use serde_json;
+use web_sys::js_sys::Math::sin;
 
-use crate::constant::{PawnType, Player, CheckMove};
+use crate::constant::{CheckMove, PawnType, Player};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Board {
@@ -17,80 +20,322 @@ impl Default for Board {
                 Line {
                     is_hidden: true,
                     belongs_to: Some(Player::PlayerOne),
-                    squares: [Square{ pawn: None, line_index: 0, pawn_index: 0, is_can_move_to: false}; 6]
+                    squares: [Square {
+                        pawn: None,
+                        line_index: 0,
+                        pawn_index: 0,
+                        is_can_move_to: false,
+                    }; 6],
                 },
                 Line {
                     is_hidden: false,
                     belongs_to: None,
                     squares: [
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::One, is_highlighted: false, player: Player::PlayerOne }), line_index: 1, pawn_index: 0, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::One, is_highlighted: false, player: Player::PlayerOne }), line_index: 1, pawn_index: 1, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Two, is_highlighted: false, player: Player::PlayerOne }), line_index: 1, pawn_index: 2, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Two, is_highlighted: false, player: Player::PlayerOne }), line_index: 1, pawn_index: 3, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Three, is_highlighted: false, player: Player::PlayerOne }), line_index: 1, pawn_index: 4, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Three, is_highlighted: false, player: Player::PlayerOne }), line_index: 1, pawn_index: 5, is_can_move_to: false},
-                    ]
-                },
-                Line {
-                    is_hidden: false,
-                    belongs_to: None,
-                    squares: [Square{ pawn: None, line_index: 2, pawn_index: 0, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 2, pawn_index: 1, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 2, pawn_index: 2, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 2, pawn_index: 3, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 2, pawn_index: 4, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 2, pawn_index: 5, is_can_move_to: false},
-                    ]
-                },
-                Line {
-                    is_hidden: false,
-                    belongs_to: None,
-                    squares: [Square{ pawn: None, line_index: 3, pawn_index: 0, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 3, pawn_index: 1, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 3, pawn_index: 2, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 3, pawn_index: 3, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 3, pawn_index: 4, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 3, pawn_index: 5, is_can_move_to: false},
-                    ]
-                },
-                Line {
-                    is_hidden: false,
-                    belongs_to: None,
-                    squares: [Square{ pawn: None, line_index: 4, pawn_index: 0, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 4, pawn_index: 1, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 4, pawn_index: 2, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 4, pawn_index: 3, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 4, pawn_index: 4, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 4, pawn_index: 5, is_can_move_to: false},
-                    ]
-                },
-                Line {
-                    is_hidden: false,
-                    belongs_to: None,
-                    squares: [Square{ pawn: None, line_index: 5, pawn_index: 0, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 5, pawn_index: 1, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 5, pawn_index: 2, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 5, pawn_index: 3, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 5, pawn_index: 4, is_can_move_to: false},
-                        Square{ pawn: None, line_index: 5, pawn_index: 5, is_can_move_to: false},
-                    ]
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::One,
+                                is_highlighted: false,
+                                player: Player::PlayerOne,
+                            }),
+                            line_index: 1,
+                            pawn_index: 0,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::One,
+                                is_highlighted: false,
+                                player: Player::PlayerOne,
+                            }),
+                            line_index: 1,
+                            pawn_index: 1,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Two,
+                                is_highlighted: false,
+                                player: Player::PlayerOne,
+                            }),
+                            line_index: 1,
+                            pawn_index: 2,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Two,
+                                is_highlighted: false,
+                                player: Player::PlayerOne,
+                            }),
+                            line_index: 1,
+                            pawn_index: 3,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Three,
+                                is_highlighted: false,
+                                player: Player::PlayerOne,
+                            }),
+                            line_index: 1,
+                            pawn_index: 4,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Three,
+                                is_highlighted: false,
+                                player: Player::PlayerOne,
+                            }),
+                            line_index: 1,
+                            pawn_index: 5,
+                            is_can_move_to: false,
+                        },
+                    ],
                 },
                 Line {
                     is_hidden: false,
                     belongs_to: None,
                     squares: [
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::One, is_highlighted: false, player: Player::PlayerTwo }), line_index: 6, pawn_index: 0, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::One, is_highlighted: false, player: Player::PlayerTwo }), line_index: 6, pawn_index: 1, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Two, is_highlighted: false, player: Player::PlayerTwo }), line_index: 6, pawn_index: 2, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Two, is_highlighted: false, player: Player::PlayerTwo }), line_index: 6, pawn_index: 3, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Three, is_highlighted: false, player: Player::PlayerTwo }), line_index: 6, pawn_index: 4, is_can_move_to: false},
-                        Square{ pawn: Some(Pawn { paywn_type: PawnType::Three, is_highlighted: false, player: Player::PlayerTwo }), line_index: 6, pawn_index: 5, is_can_move_to: false},
-                    ]
+                        Square {
+                            pawn: None,
+                            line_index: 2,
+                            pawn_index: 0,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 2,
+                            pawn_index: 1,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 2,
+                            pawn_index: 2,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 2,
+                            pawn_index: 3,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 2,
+                            pawn_index: 4,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 2,
+                            pawn_index: 5,
+                            is_can_move_to: false,
+                        },
+                    ],
+                },
+                Line {
+                    is_hidden: false,
+                    belongs_to: None,
+                    squares: [
+                        Square {
+                            pawn: None,
+                            line_index: 3,
+                            pawn_index: 0,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 3,
+                            pawn_index: 1,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 3,
+                            pawn_index: 2,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 3,
+                            pawn_index: 3,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 3,
+                            pawn_index: 4,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 3,
+                            pawn_index: 5,
+                            is_can_move_to: false,
+                        },
+                    ],
+                },
+                Line {
+                    is_hidden: false,
+                    belongs_to: None,
+                    squares: [
+                        Square {
+                            pawn: None,
+                            line_index: 4,
+                            pawn_index: 0,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 4,
+                            pawn_index: 1,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 4,
+                            pawn_index: 2,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 4,
+                            pawn_index: 3,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 4,
+                            pawn_index: 4,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 4,
+                            pawn_index: 5,
+                            is_can_move_to: false,
+                        },
+                    ],
+                },
+                Line {
+                    is_hidden: false,
+                    belongs_to: None,
+                    squares: [
+                        Square {
+                            pawn: None,
+                            line_index: 5,
+                            pawn_index: 0,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 5,
+                            pawn_index: 1,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 5,
+                            pawn_index: 2,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 5,
+                            pawn_index: 3,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 5,
+                            pawn_index: 4,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: None,
+                            line_index: 5,
+                            pawn_index: 5,
+                            is_can_move_to: false,
+                        },
+                    ],
+                },
+                Line {
+                    is_hidden: false,
+                    belongs_to: None,
+                    squares: [
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::One,
+                                is_highlighted: false,
+                                player: Player::PlayerTwo,
+                            }),
+                            line_index: 6,
+                            pawn_index: 0,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::One,
+                                is_highlighted: false,
+                                player: Player::PlayerTwo,
+                            }),
+                            line_index: 6,
+                            pawn_index: 1,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Two,
+                                is_highlighted: false,
+                                player: Player::PlayerTwo,
+                            }),
+                            line_index: 6,
+                            pawn_index: 2,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Two,
+                                is_highlighted: false,
+                                player: Player::PlayerTwo,
+                            }),
+                            line_index: 6,
+                            pawn_index: 3,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Three,
+                                is_highlighted: false,
+                                player: Player::PlayerTwo,
+                            }),
+                            line_index: 6,
+                            pawn_index: 4,
+                            is_can_move_to: false,
+                        },
+                        Square {
+                            pawn: Some(Pawn {
+                                paywn_type: PawnType::Three,
+                                is_highlighted: false,
+                                player: Player::PlayerTwo,
+                            }),
+                            line_index: 6,
+                            pawn_index: 5,
+                            is_can_move_to: false,
+                        },
+                    ],
                 },
                 Line {
                     is_hidden: true,
                     belongs_to: Some(Player::PlayerTwo),
-                    squares: [Square{ pawn: None, line_index: 7, pawn_index: 0, is_can_move_to: false}; 6]
+                    squares: [Square {
+                        pawn: None,
+                        line_index: 7,
+                        pawn_index: 0,
+                        is_can_move_to: false,
+                    }; 6],
                 },
             ],
             possible_moves: Vec::new(),
@@ -101,7 +346,6 @@ impl Default for Board {
 
 impl Board {
     pub fn move_pawn(&mut self, square_from: &Square, square_target: &Square) {
-
         // TODO ici plutôt que swap, on va devoir verifier que c'est un square possible soit le dernier d'un CorrectPath.moves
 
         let mut pawn_1: Option<Pawn> = None;
@@ -140,14 +384,14 @@ impl Board {
     pub fn update_possible_moves(&mut self, square: &Square, player: &Player) {
         if !is_closest_line_to_player(self, player, square) {
             self.remove_possible_moves();
-            return
+            return;
         }
         let starting_length = match square.pawn.unwrap().paywn_type {
             PawnType::One => 1 as usize,
             PawnType::Two => 2 as usize,
             PawnType::Three => 3 as usize,
         };
-        check_for_moves(self,square.line_index, square.pawn_index, starting_length); 
+        check_for_moves(self, square.line_index, square.pawn_index, starting_length);
     }
 
     pub fn remove_possible_moves(&mut self) {
@@ -159,7 +403,9 @@ impl Board {
     }
 
     pub fn clear_all_squares_can_move_to(&mut self) {
-        self.lines.iter_mut().for_each(|l| l.squares.iter_mut().for_each(|s| s.is_can_move_to = false ));
+        self.lines
+            .iter_mut()
+            .for_each(|l| l.squares.iter_mut().for_each(|s| s.is_can_move_to = false));
     }
 }
 
@@ -167,7 +413,7 @@ impl Board {
 pub struct Line {
     pub is_hidden: bool,
     pub belongs_to: Option<Player>,
-    pub squares : [Square; 6]
+    pub squares: [Square; 6],
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -175,7 +421,7 @@ pub struct Square {
     pub pawn: Option<Pawn>,
     pub line_index: usize,
     pub pawn_index: usize,
-    pub is_can_move_to: bool
+    pub is_can_move_to: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -187,13 +433,12 @@ pub struct Pawn {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct CorrectPath {
-    moves: Vec<Move>
+    moves: Vec<Move>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct TempPath {
     moves: Vec<Move>,
-    is_finished: bool,
     remaining_length: usize,
 }
 
@@ -211,28 +456,26 @@ pub struct Move {
     pub square_index_to: usize,
 }
 
-
-
 fn is_closest_line_to_player(board: &mut Board, player: &Player, square: &Square) -> bool {
     match player {
         Player::PlayerOne => {
             for (index, line) in board.lines.iter().enumerate().skip(1).take(6) {
                 if line.squares.iter().any(|s| s.pawn.is_some()) {
                     if index == square.line_index {
-                        return true
+                        return true;
                     } else {
-                        return false
+                        return false;
                     }
                 }
             }
-        },
+        }
         Player::PlayerTwo => {
             for (index, line) in board.lines.iter().rev().enumerate().skip(1).take(6) {
                 if line.squares.iter().any(|s| s.pawn.is_some()) {
                     if 7 - index == square.line_index {
-                        return true
+                        return true;
                     } else {
-                        return false
+                        return false;
                     }
                 }
             }
@@ -245,37 +488,159 @@ fn activate_square_can_move_to(board: &mut Board) {
     board.possible_moves.iter().for_each(|m| {
         let line_index = m.moves.last().unwrap().line_index_to;
         let square_index = m.moves.last().unwrap().square_index_to;
-        board.lines.get_mut(line_index).unwrap().squares.get_mut(square_index).unwrap().is_can_move_to = true;
+        board
+            .lines
+            .get_mut(line_index)
+            .unwrap()
+            .squares
+            .get_mut(square_index)
+            .unwrap()
+            .is_can_move_to = true;
     })
-}   
-
-fn check_for_moves(board: &mut Board, starting_line_index: usize, starting_square_index: usize, starting_length: usize) {
-    // check all directions, for each start a tmpPath si ca peut continuer, None si ça s'arrête ou un correctPath si ça s'arrête
-    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Top, None);
-    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Bottom, None);
-    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Left, None);
-    check_unit_move(board, starting_line_index, starting_square_index, starting_length, CheckMove::Right, None);
-    
-    // Recursivité pour finir tous les chemins possibles et jeter ceux qui ne finissent pas
-    // While j'ai des Tmp Path, je boucle
-    // appel à check_unit_move et je dois du coup supprimer le tmp path si false ?
-    // 
-    
-    
-    
-    activate_square_can_move_to(board);
-
-    for tmp_path in board.tmp_moves.clone() {
-        gloo_console::log!("Path :");
-        for single_move in tmp_path.moves {
-            gloo_console::log!("Move tmp :");
-            gloo_console::log!(serde_json::to_string(&single_move).unwrap());
-        }
-    };
-    // Ici je dois changer le board pour ajouter le bool sur les cibles potentielle avant le retour pour le style final
 }
 
-fn check_unit_move(board: &mut Board, line_index: usize, square_index: usize, remaining_length: usize, direction: CheckMove, temp_path: Option<&mut TempPath>) -> bool {
+fn check_for_moves(
+    board: &mut Board,
+    starting_line_index: usize,
+    starting_square_index: usize,
+    starting_length: usize,
+) {
+    for direction in CheckMove::into_iter() {
+        if let Some(single_move) = check_unit_move(
+            board,
+            starting_line_index,
+            starting_square_index,
+            starting_length,
+            direction,
+        ) {
+            board.tmp_moves.push(TempPath {
+                remaining_length: starting_length - 1,
+                moves: vec![single_move],
+            })
+        }
+    }
+
+    while !board.tmp_moves.is_empty() {
+        let last_path = board.tmp_moves.pop().unwrap();
+        let all_moves = last_path.moves.clone();
+        let last_move = last_path.moves.last().unwrap();
+
+        // si remaining == 0 et que le square d'arrivée et vide alors correct
+        if last_path.remaining_length == 0 {
+            if check_if_square_empty(board, last_move.line_index_to, last_move.square_index_to) {
+                if check_if_all_moves_are_correct(&all_moves) {
+                    board.possible_moves.push(CorrectPath { moves: all_moves });
+                }
+            }
+            // else {
+            //     let new_remaining_length = match board
+            //         .lines
+            //         .get(last_move.line_index_to)
+            //         .unwrap()
+            //         .squares
+            //         .get(last_move.square_index_to)
+            //         .unwrap()
+            //         .pawn
+            //         .unwrap()
+            //         .paywn_type
+            //     {
+            //         PawnType::One => 1 as usize,
+            //         PawnType::Two => 2 as usize,
+            //         PawnType::Three => 3 as usize,
+            //     };
+            //     for direction in CheckMove::into_iter() {
+            //         if let Some(single_move) = check_unit_move(
+            //             board,
+            //             last_move.line_index_to,
+            //             last_move.square_index_to,
+            //             new_remaining_length,
+            //             direction,
+            //         ) {
+            //             let mut all_moves = last_path.moves.clone();
+            //             all_moves.push(single_move);
+            //             board.tmp_moves.push(TempPath {
+            //                 remaining_length: new_remaining_length - 1,
+            //                 moves: all_moves,
+            //             })
+            //         }
+            //     }
+            // }
+
+            // Si longueur restante
+        } else {
+            for direction in CheckMove::into_iter() {
+                if let Some(single_move) = check_unit_move(
+                    board,
+                    last_move.line_index_to,
+                    last_move.square_index_to,
+                    last_path.remaining_length,
+                    direction,
+                ) {
+                    let mut all_moves = last_path.moves.clone();
+                    all_moves.push(single_move);
+                    board.tmp_moves.push(TempPath {
+                        remaining_length: last_path.remaining_length - 1,
+                        moves: all_moves,
+                    })
+                }
+            }
+        }
+    }
+    activate_square_can_move_to(board);
+}
+
+fn check_if_all_moves_are_correct(moves: &Vec<Move>) -> bool {
+    let mut line_moves: HashMap<usize, usize> = HashMap::new();
+    let mut row_moves: HashMap<usize, usize> = HashMap::new();
+    for single_move in moves {
+        if single_move.line_index_from != single_move.line_index_to {
+            line_moves.insert(single_move.line_index_from, single_move.line_index_to);
+        } else {
+            row_moves.insert(single_move.square_index_from, single_move.square_index_to);
+        }
+    }
+    for (&key, &value) in line_moves.iter() {
+        if let Some(&other_value) = line_moves.get(&value) {
+            if other_value == key {
+                return false;
+            }
+        }
+    }
+    for (&key, &value) in row_moves.iter() {
+        if let Some(&other_value) = row_moves.get(&value) {
+            if other_value == key {
+                return false;
+            }
+        }
+    }
+    true
+}
+
+fn check_if_square_empty(board: &Board, line_index: usize, square_index: usize) -> bool {
+    if board
+        .lines
+        .get(line_index)
+        .unwrap()
+        .squares
+        .get(square_index)
+        .unwrap()
+        .pawn
+        .is_none()
+    {
+        true
+    } else {
+        false
+    }
+}
+
+fn check_unit_move(
+    board: &Board,
+    line_index: usize,
+    square_index: usize,
+    remaining_length: usize,
+    direction: CheckMove,
+) -> Option<Move> {
+    // check for impossible moves first
     let line_index_to = match direction {
         CheckMove::Top => {
             if line_index > 0 {
@@ -283,9 +648,9 @@ fn check_unit_move(board: &mut Board, line_index: usize, square_index: usize, re
             } else {
                 0
             }
-        },
+        }
         CheckMove::Bottom => line_index + 1,
-        _ => line_index
+        _ => line_index,
     };
     let square_index_to = match direction {
         CheckMove::Left => {
@@ -294,124 +659,53 @@ fn check_unit_move(board: &mut Board, line_index: usize, square_index: usize, re
             } else {
                 0
             }
-        },
-        CheckMove::Right => square_index + 1, 
-        _ => square_index
+        }
+        CheckMove::Right => square_index + 1,
+        _ => square_index,
     };
 
     match direction {
         CheckMove::Top => {
             if line_index == 1 {
-                return false;
+                return None;
             }
-        },
+        }
         CheckMove::Bottom => {
             if line_index == 6 {
-                return false;
+                return None;
             }
-        },
+        }
         CheckMove::Left => {
             if square_index == 0 {
-                return false;
+                return None;
             }
-        },
+        }
         CheckMove::Right => {
             if square_index == 5 {
-                return false
+                return None;
             }
         }
     }
-
-    if board.lines.get(line_index_to).unwrap().squares.get(square_index_to).unwrap().pawn.is_none() {
-        // If player had still moves to complete
-        if remaining_length > 1 {
-            // If we're in an already started temp path, then add another move to it
-            if temp_path.is_some() {
-                temp_path.unwrap().moves.push(Move{
-                    line_index_from: line_index,
-                    line_index_to,
-                    square_index_from: square_index,
-                    square_index_to,
-                });
-                return true;
-            // If we're starting a new temp path, create one that is unfinished
-            } else {
-                board.tmp_moves.push(TempPath {
-                    moves: vec![
-                        Move{
-                            line_index_from: line_index,
-                            line_index_to,
-                            square_index_from: square_index,
-                            square_index_to,
-                        }
-                    ],
-                    is_finished: false,
-                    remaining_length: remaining_length -1,
-                });
-                return true;
-            }
-        // If player had to end the move
-        } else {
-            if temp_path.is_some() {
-                // remove temp path from board
-                let temp_path = temp_path.unwrap().clone();
-                if let Some(index) = board.tmp_moves.iter().position(|t| t == &temp_path) {
-                    board.tmp_moves.remove(index);
-                }
-                // add this one to correct path
-                board.possible_moves.push(temp_path.into());
-                return true;
-            } else {
-                board.possible_moves.push(CorrectPath {
-                    moves: vec![
-                        Move{
-                            line_index_from: line_index,
-                            line_index_to,
-                            square_index_from: square_index,
-                            square_index_to,
-                        }
-                    ],
-                });
-                return true;
-            }
-        }
+    // if the square is empty
+    if check_if_square_empty(board, line_index_to, square_index_to) {
+        return Some(Move {
+            line_index_from: line_index,
+            line_index_to,
+            square_index_from: square_index,
+            square_index_to,
+        });
     // If there is a pawn on the square
     } else {
         // If it's the last stop of a path, then treat that as a correct bounce
         if remaining_length == 1 {
-            let new_remaining_length = match board.lines.get(line_index_to).unwrap().squares.get(square_index_to).unwrap().pawn.unwrap().paywn_type {
-                PawnType::One => 1 as usize,
-                PawnType::Two => 2 as usize,
-                PawnType::Three => 3 as usize,
-            };
-
-            // If we were already in a temp path
-            if temp_path.is_some() {
-                temp_path.unwrap().moves.push(Move{
-                    line_index_from: line_index,
-                    line_index_to,
-                    square_index_from: square_index,
-                    square_index_to,
-                });
-                return true;
-            // else, create a new one
-            } else {
-                board.tmp_moves.push(TempPath {
-                    moves: vec![
-                        Move{
-                            line_index_from: line_index,
-                            line_index_to,
-                            square_index_from: square_index,
-                            square_index_to,
-                        }
-                    ],
-                    is_finished: false,
-                    remaining_length: new_remaining_length,
-                });
-                return true;
-            }
+            return Some(Move {
+                line_index_from: line_index,
+                line_index_to,
+                square_index_from: square_index,
+                square_index_to,
+            });
         } else {
-            return false
+            return None;
         }
     }
 }

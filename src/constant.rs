@@ -25,5 +25,17 @@ pub enum CheckMove {
     Top,
     Bottom,
     Left,
-    Right
+    Right,
+}
+
+impl CheckMove {
+    pub fn into_iter() -> core::array::IntoIter<CheckMove, 4> {
+        [
+            CheckMove::Top,
+            CheckMove::Bottom,
+            CheckMove::Left,
+            CheckMove::Right,
+        ]
+        .into_iter()
+    }
 }
