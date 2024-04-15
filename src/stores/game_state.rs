@@ -33,11 +33,19 @@ impl GameState {
                 Some(_) => {
                     self.board
                         .move_pawn(&self.pawn_to_move.unwrap(), &square_target);
+                    self.switch_player();
                     self.pawn_to_move = None;
                     self.board.toggle_pawn_highlight(&square_target);
                 }
                 None => unreachable!(),
             }
+        }
+    }
+    fn switch_player(&mut self) {
+        if self.player_turn == Player::PlayerOne {
+            self.player_turn = Player::PlayerTwo;
+        } else {
+            self.player_turn = Player::PlayerOne;
         }
     }
 }
