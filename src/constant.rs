@@ -9,8 +9,8 @@ pub enum PawnType {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Player {
-    PlayerOne,
-    PlayerTwo,
+    PlayerTop,
+    PlayerBottom,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]

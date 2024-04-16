@@ -9,7 +9,7 @@ pub fn game_info() -> Html {
         <section id="game_infos">
             {"Tour du joueur : "}
             {
-                if state.player_turn == Player::PlayerOne {
+                if state.player_turn == Player::PlayerTop {
                     html! {
                         <div>{"Joueur du haut"}</div>
                     }

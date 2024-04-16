@@ -1,5 +1,4 @@
 use crate::constant::PawnType;
-use crate::constant::Player;
 use crate::entities::board::Pawn;
 use yew::prelude::*;
 
@@ -22,11 +21,6 @@ pub fn pawn_render(props: &Props) -> Html {
                 PawnType::Two => "2",
                 PawnType::Three => "3",
             };
-            let player = match pawn.player {
-                Player::PlayerOne => "player1",
-                Player::PlayerTwo => "player2",
-            };
-
             let mut class = classes!("grid-item");
             if pawn.is_highlighted {
                 class.push("pawn_highlighted");
@@ -34,7 +28,7 @@ pub fn pawn_render(props: &Props) -> Html {
 
             html! {
                 <div {class} >
-                    <div class={classes!(player, "pawn")}>
+                    <div class={classes!("pawn")}>
                         {text}
                     </div>
                 </div>

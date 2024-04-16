@@ -1,4 +1,5 @@
 use crate::components::pawn::PawnRender;
+use crate::constant::Player;
 use crate::stores::game_state::GameState;
 use yew::prelude::*;
 use yewdux::prelude::*;
@@ -10,14 +11,31 @@ pub fn game() -> Html {
     html! {
         <section id="game">
             <div class="finish_line" id="player1_finish">
-                <div class="grid-item"></div>
+                {
+                    if state.board
+                    .lines
+                    .into_iter()
+                    .filter(|l| l.is_hidden)
+                    .next()
+                    .unwrap()
+                    .squares
+                    .into_iter()
+                    .any(|s| s.is_can_move_to) {
+                        let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
+                            state_store.select_or_move_pawn(None, Some(Player::PlayerBottom));
+                        });
+                        html!{<div class="grid-item possible-move" onclick={onclick.clone()}></div>}
+                    } else {
+                        html!{<div class="grid-item"></div>}
+                    }
+                }
             </div>
             <div class="grid-container">
             {
                 state.board.lines.into_iter().filter(|l| !l.is_hidden).map(|line| {
                     line.squares.into_iter().map(|square| {
                         let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
-                            state_store.select_or_move_pawn(square);
+                            state_store.select_or_move_pawn(Some(square), None);
                         });
                         match square.pawn {
                             Some(pawn) => html!{<div onclick={onclick.clone()}><PawnRender {pawn} /></div>},
@@ -34,7 +52,24 @@ pub fn game() -> Html {
             }
             </div>
             <div class="finish_line" id="player2_finish">
-                <div class="grid-item"></div>
+            {
+                if state.board
+                .lines
+                .into_iter()
+                .filter(|l| l.is_hidden)
+                .last()
+                .unwrap()
+                .squares
+                .into_iter()
+                .any(|s| s.is_can_move_to) {
+                    let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
+                        state_store.select_or_move_pawn(None, Some(Player::PlayerTop));
+                    });
+                    html!{<div class="grid-item possible-move" onclick={onclick.clone()}></div>}
+                } else {
+                    html!{<div class="grid-item"></div>}
+                }
+            }
             </div>
         </section>
     }

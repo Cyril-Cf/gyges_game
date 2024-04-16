@@ -16,7 +16,7 @@ impl Default for Board {
             lines: [
                 Line {
                     is_hidden: true,
-                    belongs_to: Some(Player::PlayerOne),
+                    belongs_to: Some(Player::PlayerTop),
                     squares: [Square {
                         pawn: None,
                         line_index: 0,
@@ -32,7 +32,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::One,
                                 is_highlighted: false,
-                                player: Player::PlayerOne,
+                                player: Player::PlayerTop,
                             }),
                             line_index: 1,
                             pawn_index: 0,
@@ -42,7 +42,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::One,
                                 is_highlighted: false,
-                                player: Player::PlayerOne,
+                                player: Player::PlayerTop,
                             }),
                             line_index: 1,
                             pawn_index: 1,
@@ -52,7 +52,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Two,
                                 is_highlighted: false,
-                                player: Player::PlayerOne,
+                                player: Player::PlayerTop,
                             }),
                             line_index: 1,
                             pawn_index: 2,
@@ -62,7 +62,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Two,
                                 is_highlighted: false,
-                                player: Player::PlayerOne,
+                                player: Player::PlayerTop,
                             }),
                             line_index: 1,
                             pawn_index: 3,
@@ -72,7 +72,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Three,
                                 is_highlighted: false,
-                                player: Player::PlayerOne,
+                                player: Player::PlayerTop,
                             }),
                             line_index: 1,
                             pawn_index: 4,
@@ -82,7 +82,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Three,
                                 is_highlighted: false,
-                                player: Player::PlayerOne,
+                                player: Player::PlayerTop,
                             }),
                             line_index: 1,
                             pawn_index: 5,
@@ -266,7 +266,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::One,
                                 is_highlighted: false,
-                                player: Player::PlayerTwo,
+                                player: Player::PlayerBottom,
                             }),
                             line_index: 6,
                             pawn_index: 0,
@@ -276,7 +276,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::One,
                                 is_highlighted: false,
-                                player: Player::PlayerTwo,
+                                player: Player::PlayerBottom,
                             }),
                             line_index: 6,
                             pawn_index: 1,
@@ -286,7 +286,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Two,
                                 is_highlighted: false,
-                                player: Player::PlayerTwo,
+                                player: Player::PlayerBottom,
                             }),
                             line_index: 6,
                             pawn_index: 2,
@@ -296,7 +296,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Two,
                                 is_highlighted: false,
-                                player: Player::PlayerTwo,
+                                player: Player::PlayerBottom,
                             }),
                             line_index: 6,
                             pawn_index: 3,
@@ -306,7 +306,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Three,
                                 is_highlighted: false,
-                                player: Player::PlayerTwo,
+                                player: Player::PlayerBottom,
                             }),
                             line_index: 6,
                             pawn_index: 4,
@@ -316,7 +316,7 @@ impl Default for Board {
                             pawn: Some(Pawn {
                                 paywn_type: PawnType::Three,
                                 is_highlighted: false,
-                                player: Player::PlayerTwo,
+                                player: Player::PlayerBottom,
                             }),
                             line_index: 6,
                             pawn_index: 5,
@@ -326,7 +326,7 @@ impl Default for Board {
                 },
                 Line {
                     is_hidden: true,
-                    belongs_to: Some(Player::PlayerTwo),
+                    belongs_to: Some(Player::PlayerBottom),
                     squares: [Square {
                         pawn: None,
                         line_index: 7,
@@ -385,7 +385,13 @@ impl Board {
             PawnType::Two => 2 as usize,
             PawnType::Three => 3 as usize,
         };
-        check_for_moves(self, square.line_index, square.pawn_index, starting_length);
+        check_for_moves(
+            self,
+            square.line_index,
+            square.pawn_index,
+            starting_length,
+            player,
+        );
     }
 
     pub fn remove_possible_moves(&mut self) {
@@ -452,7 +458,7 @@ pub struct Move {
 
 fn is_closest_line_to_player(board: &mut Board, player: &Player, square: &Square) -> bool {
     match player {
-        Player::PlayerOne => {
+        Player::PlayerTop => {
             for (index, line) in board.lines.iter().enumerate().skip(1).take(6) {
                 if line.squares.iter().any(|s| s.pawn.is_some()) {
                     if index == square.line_index {
@@ -463,7 +469,7 @@ fn is_closest_line_to_player(board: &mut Board, player: &Player, square: &Square
                 }
             }
         }
-        Player::PlayerTwo => {
+        Player::PlayerBottom => {
             for (index, line) in board.lines.iter().rev().enumerate().skip(1).take(6) {
                 if line.squares.iter().any(|s| s.pawn.is_some()) {
                     if 7 - index == square.line_index {
@@ -498,6 +504,7 @@ fn check_for_moves(
     starting_line_index: usize,
     starting_square_index: usize,
     starting_length: usize,
+    player: &Player,
 ) {
     for direction in CheckMove::into_iter() {
         if let Some(single_move) = check_unit_move(
@@ -506,6 +513,7 @@ fn check_for_moves(
             starting_square_index,
             starting_length,
             direction,
+            player,
         ) {
             board.tmp_moves.push(TempPath {
                 remaining_length: starting_length - 1,
@@ -547,6 +555,7 @@ fn check_for_moves(
                         last_move.square_index_to,
                         new_remaining_length,
                         direction,
+                        player,
                     ) {
                         let mut all_moves = last_path.moves.clone();
                         all_moves.push(single_move);
@@ -567,6 +576,7 @@ fn check_for_moves(
                     last_move.square_index_to,
                     last_path.remaining_length,
                     direction,
+                    player,
                 ) {
                     let mut all_moves = last_path.moves.clone();
                     all_moves.push(single_move);
@@ -579,6 +589,42 @@ fn check_for_moves(
         }
     }
     activate_square_can_move_to(board);
+    check_for_winning_moves(board);
+}
+
+fn check_for_winning_moves(board: &mut Board) {
+    if board
+        .lines
+        .first()
+        .unwrap()
+        .squares
+        .iter()
+        .any(|s| s.is_can_move_to)
+    {
+        board
+            .lines
+            .first_mut()
+            .unwrap()
+            .squares
+            .iter_mut()
+            .for_each(|s| s.is_can_move_to = true);
+    };
+    if board
+        .lines
+        .last()
+        .unwrap()
+        .squares
+        .iter()
+        .any(|s| s.is_can_move_to)
+    {
+        board
+            .lines
+            .last_mut()
+            .unwrap()
+            .squares
+            .iter_mut()
+            .for_each(|s| s.is_can_move_to = true);
+    };
 }
 
 fn check_if_all_moves_are_correct(moves: &Vec<Move>) -> bool {
@@ -631,6 +677,7 @@ fn check_unit_move(
     square_index: usize,
     remaining_length: usize,
     direction: CheckMove,
+    player: &Player,
 ) -> Option<Move> {
     // check for impossible moves first
     let line_index_to = match direction {
@@ -641,7 +688,13 @@ fn check_unit_move(
                 0
             }
         }
-        CheckMove::Bottom => line_index + 1,
+        CheckMove::Bottom => {
+            if line_index < 7 {
+                line_index + 1
+            } else {
+                7
+            }
+        }
         _ => line_index,
     };
     let square_index_to = match direction {
@@ -652,18 +705,30 @@ fn check_unit_move(
                 0
             }
         }
-        CheckMove::Right => square_index + 1,
+        CheckMove::Right => {
+            if square_index < 5 {
+                square_index + 1
+            } else {
+                5
+            }
+        }
         _ => square_index,
     };
 
     match direction {
         CheckMove::Top => {
-            if line_index == 1 {
+            if line_index == 0 {
+                return None;
+            }
+            if *player == Player::PlayerTop && line_index == 1 {
                 return None;
             }
         }
         CheckMove::Bottom => {
-            if line_index == 6 {
+            if line_index == 7 {
+                return None;
+            }
+            if *player == Player::PlayerBottom && line_index == 6 {
                 return None;
             }
         }
