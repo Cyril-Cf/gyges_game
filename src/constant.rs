@@ -15,9 +15,17 @@ pub enum Player {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum GameStatus {
-    Ready,
+    Preparing(PreparationStep),
     Playing,
     Finished,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PreparationStep {
+    NoPlayerReady,
+    PlayerTopReady,
+    PlayerBottomReady,
+    BothPlayersReady,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]

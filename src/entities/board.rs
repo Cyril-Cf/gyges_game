@@ -29,61 +29,37 @@ impl Default for Board {
                     belongs_to: None,
                     squares: [
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::One,
-                                is_highlighted: false,
-                                player: Player::PlayerTop,
-                            }),
+                            pawn: None,
                             line_index: 1,
                             pawn_index: 0,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::One,
-                                is_highlighted: false,
-                                player: Player::PlayerTop,
-                            }),
+                            pawn: None,
                             line_index: 1,
                             pawn_index: 1,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Two,
-                                is_highlighted: false,
-                                player: Player::PlayerTop,
-                            }),
+                            pawn: None,
                             line_index: 1,
                             pawn_index: 2,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Two,
-                                is_highlighted: false,
-                                player: Player::PlayerTop,
-                            }),
+                            pawn: None,
                             line_index: 1,
                             pawn_index: 3,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Three,
-                                is_highlighted: false,
-                                player: Player::PlayerTop,
-                            }),
+                            pawn: None,
                             line_index: 1,
                             pawn_index: 4,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Three,
-                                is_highlighted: false,
-                                player: Player::PlayerTop,
-                            }),
+                            pawn: None,
                             line_index: 1,
                             pawn_index: 5,
                             is_can_move_to: false,
@@ -263,61 +239,37 @@ impl Default for Board {
                     belongs_to: None,
                     squares: [
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::One,
-                                is_highlighted: false,
-                                player: Player::PlayerBottom,
-                            }),
+                            pawn: None,
                             line_index: 6,
                             pawn_index: 0,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::One,
-                                is_highlighted: false,
-                                player: Player::PlayerBottom,
-                            }),
+                            pawn: None,
                             line_index: 6,
                             pawn_index: 1,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Two,
-                                is_highlighted: false,
-                                player: Player::PlayerBottom,
-                            }),
+                            pawn: None,
                             line_index: 6,
                             pawn_index: 2,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Two,
-                                is_highlighted: false,
-                                player: Player::PlayerBottom,
-                            }),
+                            pawn: None,
                             line_index: 6,
                             pawn_index: 3,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Three,
-                                is_highlighted: false,
-                                player: Player::PlayerBottom,
-                            }),
+                            pawn: None,
                             line_index: 6,
                             pawn_index: 4,
                             is_can_move_to: false,
                         },
                         Square {
-                            pawn: Some(Pawn {
-                                paywn_type: PawnType::Three,
-                                is_highlighted: false,
-                                player: Player::PlayerBottom,
-                            }),
+                            pawn: None,
                             line_index: 6,
                             pawn_index: 5,
                             is_can_move_to: false,
@@ -426,9 +378,39 @@ pub struct Square {
 
 #[derive(Clone, Copy, Debug, Serialize, PartialEq, Eq)]
 pub struct Pawn {
-    pub player: Player,
     pub paywn_type: PawnType,
     pub is_highlighted: bool,
+}
+
+impl Pawn {
+    pub fn get_set_of_pawns() -> Vec<Pawn> {
+        vec![
+            Pawn {
+                is_highlighted: false,
+                paywn_type: PawnType::One,
+            },
+            Pawn {
+                is_highlighted: false,
+                paywn_type: PawnType::One,
+            },
+            Pawn {
+                is_highlighted: false,
+                paywn_type: PawnType::Two,
+            },
+            Pawn {
+                is_highlighted: false,
+                paywn_type: PawnType::Two,
+            },
+            Pawn {
+                is_highlighted: false,
+                paywn_type: PawnType::Three,
+            },
+            Pawn {
+                is_highlighted: false,
+                paywn_type: PawnType::Three,
+            },
+        ]
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]

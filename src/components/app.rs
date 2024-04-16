@@ -4,7 +4,8 @@ use yewdux::prelude::*;
 
 use crate::components::aside::Aside;
 use crate::components::footer::Footer;
-use crate::components::game::Game;
+use crate::components::game_playing::GamePlaying;
+use crate::components::game_preparing::GamePreparing;
 use crate::components::game_won::GameWon;
 use crate::components::header::Header;
 use crate::constant::GameStatus;
@@ -18,10 +19,10 @@ pub fn App() -> Html {
             <Header />
             <main>
                 {
-                    if state.status == GameStatus::Playing {
-                        html!{<Game />}
-                    } else {
-                        html!{<GameWon />}
+                    match state.status {
+                        GameStatus::Preparing(_) => html!{<GamePreparing />},
+                        GameStatus::Playing => html!{<GamePlaying />},
+                        GameStatus::Finished => html!{<GameWon />}
                     }
                 }
                 <Aside />

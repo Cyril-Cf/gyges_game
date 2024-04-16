@@ -1,7 +1,8 @@
 use crate::{
-    constant::{GameStatus, Player},
-    entities::board::{Board, Square},
+    constant::{GameStatus, Player, PreparationStep},
+    entities::board::{Board, Pawn, Square},
 };
+use rand::seq::SliceRandom;
 use yewdux::prelude::*;
 
 #[derive(PartialEq, Clone, Store)]
@@ -82,6 +83,35 @@ impl GameState {
     pub fn restart_game(&mut self) {
         *self = GameState::default();
     }
+    pub fn place_pawns_full_random(&mut self) {
+        self.place_pawns_random_player_top();
+        self.place_pawns_random_player_bottom();
+        self.status = GameStatus::Playing;
+    }
+    pub fn place_pawns_random_player_top(&mut self) {
+        let mut pawns = Pawn::get_set_of_pawns();
+        pawns.shuffle(&mut rand::thread_rng());
+        for square in self.board.lines.get_mut(1).unwrap().squares.iter_mut() {
+            square.pawn = Some(pawns.pop().unwrap());
+        }
+        if self.status == GameStatus::Preparing(PreparationStep::NoPlayerReady) {
+            self.status = GameStatus::Preparing(PreparationStep::PlayerTopReady);
+        } else if self.status == GameStatus::Preparing(PreparationStep::PlayerBottomReady) {
+            self.status = GameStatus::Playing;
+        }
+    }
+    pub fn place_pawns_random_player_bottom(&mut self) {
+        let mut pawns = Pawn::get_set_of_pawns();
+        pawns.shuffle(&mut rand::thread_rng());
+        for square in self.board.lines.get_mut(6).unwrap().squares.iter_mut() {
+            square.pawn = Some(pawns.pop().unwrap());
+        }
+        if self.status == GameStatus::Preparing(PreparationStep::NoPlayerReady) {
+            self.status = GameStatus::Preparing(PreparationStep::PlayerBottomReady);
+        } else if self.status == GameStatus::Preparing(PreparationStep::PlayerTopReady) {
+            self.status = GameStatus::Playing;
+        }
+    }
 }
 
 impl Default for GameState {
@@ -90,7 +120,7 @@ impl Default for GameState {
             pawn_to_move: Default::default(),
             board: Default::default(),
             player_turn: Player::PlayerBottom,
-            status: GameStatus::Playing,
+            status: GameStatus::Preparing(PreparationStep::NoPlayerReady),
             winning_player: None,
         }
     }

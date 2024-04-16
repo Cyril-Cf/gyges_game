@@ -1,8 +1,9 @@
 pub mod app;
 pub mod aside;
 pub mod footer;
-pub mod game;
 pub mod game_info;
+pub mod game_playing;
+pub mod game_preparing;
 pub mod game_won;
 pub mod header;
 pub mod pawn;

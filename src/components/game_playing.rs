@@ -4,7 +4,7 @@ use crate::stores::game_state::GameState;
 use yew::prelude::*;
 use yewdux::prelude::*;
 
-#[function_component(Game)]
+#[function_component(GamePlaying)]
 pub fn game() -> Html {
     let (state, _) = use_store::<GameState>();
     let (_, dispatch) = use_store::<GameState>();
