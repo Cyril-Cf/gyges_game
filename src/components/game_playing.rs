@@ -37,13 +37,35 @@ pub fn game() -> Html {
                         let onclick: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
                             state_store.select_or_move_pawn(Some(square), None);
                         });
+                        let onmouseover: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
+                            state_store.trace_correct_path(&square);
+                        });
+                        let onmouseleave: Callback<MouseEvent> = dispatch.reduce_mut_callback(move |state_store| {
+                            state_store.remove_all_correct_paths();
+                        });
                         match square.pawn {
-                            Some(pawn) => html!{<div onclick={onclick.clone()}><PawnRender {pawn} /></div>},
-                            None => {
-                                if square.is_can_move_to {
-                                    html!{<div class="grid-item possible-move" onclick={onclick.clone()}></div>}
+                            Some(pawn) => {
+                                if square.is_correct_path {
+                                    let is_correct_path = true;
+                                    html!{<div onclick={onclick.clone()}><PawnRender {pawn} {is_correct_path} /></div>}
                                 } else {
-                                    html!{<div class="grid-item"></div>}
+                                    let is_correct_path = false;
+                                    html!{<div onclick={onclick.clone()}><PawnRender {pawn} {is_correct_path} /></div>}
+                                }
+                            },
+                            None => {
+                                let mut class = classes!("grid-item");
+                                if square.is_correct_path {
+                                    class.push("correct-step");
+                                } else if square.is_can_move_to {
+                                    class.push("possible-move");
+                                }
+                                if square.is_can_move_to {
+                                    html!{<div {class} onclick={onclick.clone()} onmouseover={onmouseover.clone()} onmouseleave={onmouseleave.clone()}></div>}
+                                } else if square.is_correct_path {
+                                    html!{<div {class}></div>}
+                                } else {
+                                    html!{<div {class}></div>}
                                 }
                             }
                         }

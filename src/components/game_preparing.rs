@@ -74,7 +74,10 @@ pub fn header() -> Html {
                                 state_store.select_or_move_pawn(Some(square), None);
                             });
                             match square.pawn {
-                                Some(pawn) => html!{<PawnRender {pawn} />},
+                                Some(pawn) => {
+                                    let is_correct_path = false;
+                                    html!{<PawnRender {pawn} {is_correct_path} />}
+                                },
                                 None => {
                                     html!{<div class="grid-item" onclick={onclick.clone()}></div>}
                                 }

@@ -1,6 +1,6 @@
 use crate::{
     constant::{GameStatus, Player, PreparationStep},
-    entities::board::{Board, Pawn, Square},
+    entities::board::{Board, CorrectPath, Pawn, Square},
 };
 use rand::seq::SliceRandom;
 use yewdux::prelude::*;
@@ -28,6 +28,7 @@ impl GameState {
                     self.board.move_pawn(&self.pawn_to_move.unwrap(), square);
                     self.status = GameStatus::Finished;
                     self.winning_player = winning_player;
+                    self.remove_all_correct_paths();
                     return;
                 }
             }
@@ -38,6 +39,7 @@ impl GameState {
                     self.board.move_pawn(&self.pawn_to_move.unwrap(), square);
                     self.status = GameStatus::Finished;
                     self.winning_player = winning_player;
+                    self.remove_all_correct_paths();
                     return;
                 }
             }
@@ -65,6 +67,7 @@ impl GameState {
                         self.board
                             .move_pawn(&self.pawn_to_move.unwrap(), &square_target);
                         self.switch_player();
+                        self.remove_all_correct_paths();
                         self.pawn_to_move = None;
                         self.board.toggle_pawn_highlight(&square_target);
                     }
@@ -120,6 +123,37 @@ impl GameState {
     }
     pub fn chose_player_bottom(&mut self) {
         self.player_turn = Player::PlayerBottom;
+    }
+    pub fn trace_correct_path(&mut self, square_target: &Square) {
+        let correct_paths: Vec<&CorrectPath> = self
+            .board
+            .possible_moves
+            .iter()
+            .filter(|path| {
+                let last_move = path.moves.last().unwrap();
+                square_target.line_index == last_move.line_index_to
+                    && square_target.pawn_index == last_move.square_index_to
+            })
+            .collect();
+        for path in correct_paths.iter() {
+            for single_move in path.moves.iter() {
+                self.board
+                    .lines
+                    .get_mut(single_move.line_index_to)
+                    .unwrap()
+                    .squares
+                    .get_mut(single_move.square_index_to)
+                    .unwrap()
+                    .is_correct_path = true;
+            }
+        }
+    }
+
+    pub fn remove_all_correct_paths(&mut self) {
+        self.board
+            .lines
+            .iter_mut()
+            .for_each(|l| l.squares.iter_mut().for_each(|s| s.is_correct_path = false));
     }
 }
 

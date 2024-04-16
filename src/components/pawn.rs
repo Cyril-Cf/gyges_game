@@ -5,11 +5,15 @@ use yew::prelude::*;
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub pawn: Option<Pawn>,
+    pub is_correct_path: bool,
 }
 
 #[function_component(PawnRender)]
 pub fn pawn_render(props: &Props) -> Html {
-    let Props { pawn } = props;
+    let Props {
+        pawn,
+        is_correct_path,
+    } = props;
 
     match pawn {
         None => html! {
@@ -22,7 +26,9 @@ pub fn pawn_render(props: &Props) -> Html {
                 PawnType::Three => "3",
             };
             let mut class = classes!("grid-item");
-            if pawn.is_highlighted {
+            if *is_correct_path {
+                class.push("correct-step");
+            } else if pawn.is_highlighted {
                 class.push("pawn_highlighted");
             }
 
