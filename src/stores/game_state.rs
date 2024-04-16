@@ -86,7 +86,7 @@ impl GameState {
     pub fn place_pawns_full_random(&mut self) {
         self.place_pawns_random_player_top();
         self.place_pawns_random_player_bottom();
-        self.status = GameStatus::Playing;
+        self.status = GameStatus::Preparing(PreparationStep::BothPlayersReady);
     }
     pub fn place_pawns_random_player_top(&mut self) {
         let mut pawns = Pawn::get_set_of_pawns();
@@ -94,10 +94,10 @@ impl GameState {
         for square in self.board.lines.get_mut(1).unwrap().squares.iter_mut() {
             square.pawn = Some(pawns.pop().unwrap());
         }
-        if self.status == GameStatus::Preparing(PreparationStep::NoPlayerReady) {
+        if self.status == GameStatus::Preparing(PreparationStep::PlayerBottomReady) {
+            self.status = GameStatus::Preparing(PreparationStep::BothPlayersReady);
+        } else {
             self.status = GameStatus::Preparing(PreparationStep::PlayerTopReady);
-        } else if self.status == GameStatus::Preparing(PreparationStep::PlayerBottomReady) {
-            self.status = GameStatus::Playing;
         }
     }
     pub fn place_pawns_random_player_bottom(&mut self) {
@@ -106,11 +106,20 @@ impl GameState {
         for square in self.board.lines.get_mut(6).unwrap().squares.iter_mut() {
             square.pawn = Some(pawns.pop().unwrap());
         }
-        if self.status == GameStatus::Preparing(PreparationStep::NoPlayerReady) {
+        if self.status == GameStatus::Preparing(PreparationStep::PlayerTopReady) {
+            self.status = GameStatus::Preparing(PreparationStep::BothPlayersReady);
+        } else {
             self.status = GameStatus::Preparing(PreparationStep::PlayerBottomReady);
-        } else if self.status == GameStatus::Preparing(PreparationStep::PlayerTopReady) {
-            self.status = GameStatus::Playing;
         }
+    }
+    pub fn start_game(&mut self) {
+        self.status = GameStatus::Playing;
+    }
+    pub fn chose_player_top(&mut self) {
+        self.player_turn = Player::PlayerTop;
+    }
+    pub fn chose_player_bottom(&mut self) {
+        self.player_turn = Player::PlayerBottom;
     }
 }
 
