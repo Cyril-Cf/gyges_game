@@ -1,5 +1,5 @@
 use crate::{
-    constant::Player,
+    constant::{GameStatus, Player},
     entities::board::{Board, Square},
 };
 use yewdux::prelude::*;
@@ -9,6 +9,8 @@ pub struct GameState {
     pub pawn_to_move: Option<Square>,
     pub board: Board,
     pub player_turn: Player,
+    pub status: GameStatus,
+    pub winning_player: Option<Player>,
 }
 
 impl GameState {
@@ -23,7 +25,8 @@ impl GameState {
                 let last_line = board.lines.last().unwrap();
                 if let Some(square) = last_line.squares.first() {
                     self.board.move_pawn(&self.pawn_to_move.unwrap(), square);
-                    gloo::console::log!(serde_json::to_string(&square).unwrap());
+                    self.status = GameStatus::Finished;
+                    self.winning_player = winning_player;
                     return;
                 }
             }
@@ -32,7 +35,8 @@ impl GameState {
                 let first_line = board.lines.first().unwrap();
                 if let Some(square) = first_line.squares.first() {
                     self.board.move_pawn(&self.pawn_to_move.unwrap(), square);
-                    gloo::console::log!(serde_json::to_string(&square).unwrap());
+                    self.status = GameStatus::Finished;
+                    self.winning_player = winning_player;
                     return;
                 }
             }
@@ -75,6 +79,9 @@ impl GameState {
             self.player_turn = Player::PlayerTop;
         }
     }
+    pub fn restart_game(&mut self) {
+        *self = GameState::default();
+    }
 }
 
 impl Default for GameState {
@@ -83,6 +90,8 @@ impl Default for GameState {
             pawn_to_move: Default::default(),
             board: Default::default(),
             player_turn: Player::PlayerBottom,
+            status: GameStatus::Playing,
+            winning_player: None,
         }
     }
 }
