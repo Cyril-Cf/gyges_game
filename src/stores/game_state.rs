@@ -46,10 +46,10 @@ impl GameState {
             _ => {}
         }
         if let Some(square_target) = square_target {
-            if !is_closest_line_to_player(&mut self.board, &self.player_turn, &square_target) {
-                return;
-            }
             if self.pawn_to_move.is_none() {
+                if !is_closest_line_to_player(&mut self.board, &self.player_turn, &square_target) {
+                    return;
+                }
                 self.board.toggle_pawn_highlight(&square_target);
                 self.pawn_to_move = Some(square_target);
                 self.board
