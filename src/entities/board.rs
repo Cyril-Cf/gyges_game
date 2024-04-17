@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 use crate::constant::{CheckMove, PawnType, Player};
 
@@ -469,7 +469,7 @@ impl Into<CorrectPath> for TempPath {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize, Hash)]
 pub struct Move {
     pub line_index_from: usize,
     pub line_index_to: usize,
@@ -601,10 +601,12 @@ fn check_for_moves(
                 ) {
                     let mut all_moves = last_path.moves.clone();
                     all_moves.push(single_move);
-                    board.tmp_moves.push(TempPath {
-                        remaining_length: last_path.remaining_length - 1,
-                        moves: all_moves,
-                    })
+                    if check_if_all_moves_are_correct(&all_moves) {
+                        board.tmp_moves.push(TempPath {
+                            remaining_length: last_path.remaining_length - 1,
+                            moves: all_moves,
+                        })
+                    }
                 }
             }
         }
@@ -649,34 +651,24 @@ fn check_for_winning_moves(board: &mut Board) {
 }
 
 fn check_if_all_moves_are_correct(moves: &Vec<Move>) -> bool {
-    let mut line_moves: HashMap<usize, usize> = HashMap::new();
-    let mut row_moves: HashMap<usize, usize> = HashMap::new();
+    let mut seen_moves = HashSet::new();
     for single_move in moves {
-        if single_move.line_index_from != single_move.line_index_to {
-            line_moves.insert(single_move.line_index_from, single_move.line_index_to);
-        } else {
-            row_moves.insert(single_move.square_index_from, single_move.square_index_to);
+        let opposite_move = Move {
+            line_index_from: single_move.line_index_to,
+            line_index_to: single_move.line_index_from,
+            square_index_from: single_move.square_index_to,
+            square_index_to: single_move.square_index_from,
+        };
+        if seen_moves.contains(&opposite_move) || seen_moves.contains(single_move) {
+            return false;
         }
-    }
-    for (&key, &value) in line_moves.iter() {
-        if let Some(&other_value) = line_moves.get(&value) {
-            if other_value == key {
-                return false;
-            }
-        }
-    }
-    for (&key, &value) in row_moves.iter() {
-        if let Some(&other_value) = row_moves.get(&value) {
-            if other_value == key {
-                return false;
-            }
-        }
+        seen_moves.insert(single_move);
     }
     true
 }
 
 fn check_if_square_empty(board: &Board, line_index: usize, square_index: usize) -> bool {
-    if board
+    board
         .lines
         .get(line_index)
         .unwrap()
@@ -685,11 +677,6 @@ fn check_if_square_empty(board: &Board, line_index: usize, square_index: usize) 
         .unwrap()
         .pawn
         .is_none()
-    {
-        true
-    } else {
-        false
-    }
 }
 
 fn check_unit_move(
@@ -706,14 +693,14 @@ fn check_unit_move(
             if line_index > 0 {
                 line_index - 1
             } else {
-                0
+                return None;
             }
         }
         CheckMove::Bottom => {
             if line_index < 7 {
                 line_index + 1
             } else {
-                7
+                return None;
             }
         }
         _ => line_index,
@@ -723,14 +710,14 @@ fn check_unit_move(
             if square_index > 0 {
                 square_index - 1
             } else {
-                0
+                return None;
             }
         }
         CheckMove::Right => {
             if square_index < 5 {
                 square_index + 1
             } else {
-                5
+                return None;
             }
         }
         _ => square_index,
@@ -738,31 +725,16 @@ fn check_unit_move(
 
     match direction {
         CheckMove::Top => {
-            if line_index == 0 {
-                return None;
-            }
             if *player == Player::PlayerTop && line_index == 1 {
                 return None;
             }
         }
         CheckMove::Bottom => {
-            if line_index == 7 {
-                return None;
-            }
             if *player == Player::PlayerBottom && line_index == 6 {
                 return None;
             }
         }
-        CheckMove::Left => {
-            if square_index == 0 {
-                return None;
-            }
-        }
-        CheckMove::Right => {
-            if square_index == 5 {
-                return None;
-            }
-        }
+        _ => {}
     }
     // if the square is empty
     if check_if_square_empty(board, line_index_to, square_index_to) {
