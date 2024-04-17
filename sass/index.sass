@@ -5,8 +5,15 @@ body
     font-family: "Sedan", serif
     font-weight: 400
     font-style: normal
+    color: whitesmoke
+    background-color: black
     header
         height: 10vh
+        display: flex
+        justify-content: center
+        align-items: center
+        img
+            width: 65px
     main
         display: flex
         justify-content: center
@@ -23,7 +30,9 @@ body
                 justify-content: center
                 flex-wrap: wrap
             .grid-item
-                background-color: #ddd
+                background-color: lightgrey
+                color: black
+                font-size: 22px
                 width: 85px
                 margin: 4px
                 height: 85px
@@ -41,7 +50,8 @@ body
             .possible-move
                 margin: 2px
                 border: solid
-                border-color: green
+                background-color: #00FF00
+                border-color: #00FF00
                 border-width: 2px
             .pawn_highlighted
                 margin: 2px
@@ -52,7 +62,7 @@ body
                 display: flex
                 justify-content: center
         aside
-            border: 1px black solid
+            border: 1px whitesmoke solid
             width: 45%
             .container
                 display: flex
@@ -61,7 +71,7 @@ body
                     width: 100%
                     section#game-preparation
                         height: 150px
-                        border-bottom: 1px black solid
+                        border-bottom: 1px whitesmoke solid
                         padding-bottom: 10px
                         h2
                             font-size: 18px
@@ -74,7 +84,7 @@ body
                                 width: calc( (100% / 3) - 5px )
                     section#game_infos
                         height: 150px
-                        border-bottom: 1px black solid
+                        border-bottom: 1px whitesmoke solid
                         padding-bottom: 10px
                         display: flex
                         flex-direction: row
@@ -123,3 +133,6 @@ body
 
 .hidden
     display: none
+
+a, a:hover, a:visited
+    color: red

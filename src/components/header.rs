@@ -4,7 +4,8 @@ use yew::{function_component, html, Html};
 pub fn header() -> Html {
     html! {
         <header >
-            <h1>{"Apprenez et jouez à Gygès !"}</h1>
+            <img src="public/ferris.png"/>
+            <h1>{"Apprenez et jouez à Gygès avec Rust !"}</h1>
         </header>
     }
 }
