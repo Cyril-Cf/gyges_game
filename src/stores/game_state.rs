@@ -1,6 +1,6 @@
 use crate::{
     constant::{GameStatus, Player, PreparationStep},
-    entities::board::{Board, CorrectPath, Pawn, Square},
+    entities::board::{is_closest_line_to_player, Board, CorrectPath, Pawn, Square},
 };
 use rand::seq::SliceRandom;
 use yewdux::prelude::*;
@@ -46,6 +46,9 @@ impl GameState {
             _ => {}
         }
         if let Some(square_target) = square_target {
+            if !is_closest_line_to_player(&mut self.board, &self.player_turn, &square_target) {
+                return;
+            }
             if self.pawn_to_move.is_none() {
                 self.board.toggle_pawn_highlight(&square_target);
                 self.pawn_to_move = Some(square_target);

@@ -477,7 +477,7 @@ pub struct Move {
     pub square_index_to: usize,
 }
 
-fn is_closest_line_to_player(board: &mut Board, player: &Player, square: &Square) -> bool {
+pub fn is_closest_line_to_player(board: &mut Board, player: &Player, square: &Square) -> bool {
     match player {
         Player::PlayerTop => {
             for (index, line) in board.lines.iter().enumerate().skip(1).take(6) {
