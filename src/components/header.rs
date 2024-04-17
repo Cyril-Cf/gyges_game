@@ -4,7 +4,7 @@ use yew::{function_component, html, Html};
 pub fn header() -> Html {
     html! {
         <header >
-            {"Ceci est un header"}
+            <h1>{"Apprenez et jouez à Gygès !"}</h1>
         </header>
     }
 }

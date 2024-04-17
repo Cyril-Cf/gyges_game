@@ -1,6 +1,7 @@
 use yew::{function_component, html, Html};
 use yewdux::prelude::*;
 
+use crate::components::aside_game_preparing::AsideGamePreparing;
 use crate::components::game_info::GameInfo;
 use crate::components::rules::Rules;
 use crate::constant::GameStatus;
@@ -13,12 +14,21 @@ pub fn aside() -> Html {
         <aside>
             {
                 match state.status {
-                    GameStatus::Playing => html!{<GameInfo />},
-                    _ => html!{}
+                    GameStatus::Preparing(_) => html!{
+                        <>
+                            <AsideGamePreparing />
+                            <Rules />
+                        </>
+                    },
+                    GameStatus::Playing => html!{
+                        <>
+                            <GameInfo />
+                            <Rules />
+                        </>
+                    },
+                    GameStatus::Finished => html!{}
                 }
             }
-
-            <Rules />
         </aside>
     }
 }

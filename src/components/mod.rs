@@ -1,5 +1,6 @@
 pub mod app;
 pub mod aside;
+pub mod aside_game_preparing;
 pub mod footer;
 pub mod game_info;
 pub mod game_playing;
