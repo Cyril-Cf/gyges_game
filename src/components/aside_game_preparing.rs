@@ -39,7 +39,7 @@ pub fn footer() -> Html {
         <section id="game-preparation">
             {
                 match state.status {
-                    GameStatus::Preparing(_) => {
+                    GameStatus::Preparing(step) => {
                         html!{
                             <>
                                 <div class="container">
@@ -62,7 +62,12 @@ pub fn footer() -> Html {
                                                 Player::PlayerBottom => html!{<p>{"Le joueur du bas va commencer !"}</p>}
                                             }
                                         }
-                                        <button onclick={onclick_start_game.clone()}>{"Lancer la partie"}</button>
+                                        {
+                                            match step {
+                                                PreparationStep::BothPlayersReady => html!{<button onclick={onclick_start_game.clone()}>{"Lancer la partie"}</button>},
+                                                _ => html!{}
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </>

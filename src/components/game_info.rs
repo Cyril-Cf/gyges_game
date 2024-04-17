@@ -7,18 +7,28 @@ pub fn game_info() -> Html {
     let (state, _) = use_store::<GameState>();
     html! {
         <section id="game_infos">
-            {"Tour du joueur : "}
-            {
-                if state.player_turn == Player::PlayerTop {
-                    html! {
-                        <div>{"Joueur du haut"}</div>
-                    }
-                } else {
-                    html! {
-                        <div>{"Joueur du bas"}</div>
+            <section id="player-turn">
+                <h2>{"Tour du joueur : "}</h2>
+                {
+                    if state.player_turn == Player::PlayerTop {
+                        html! {
+                            <strong>{"Joueur du haut"}</strong>
+                        }
+                    } else {
+                        html! {
+                            <strong>{"Joueur du bas"}</strong>
+                        }
                     }
                 }
-            }
+            </section>
+            <section id="ux-infos">
+                <h2>{"Déroulé d'un tour"}</h2>
+                <ol>
+                    <li>{"Sélectionnez un pion que vous pouvez déplacer"}</li>
+                    <li>{"Les mouvements possibles apparaissent en vert"}</li>
+                    <li>{"Choisissez l'emplacement d'arrivée"}</li>
+                </ol>
+            </section>
         </section>
     }
 }

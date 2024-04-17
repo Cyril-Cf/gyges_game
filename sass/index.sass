@@ -59,11 +59,10 @@ body
                 flex-direction: column
                 section#top
                     width: 100%
-                    section
+                    section#game-preparation
                         height: 150px
                         border-bottom: 1px black solid
                         padding-bottom: 10px
-                    section#game-preparation
                         h2
                             font-size: 18px
                         .container
@@ -74,7 +73,24 @@ body
                             div
                                 width: calc( (100% / 3) - 5px )
                     section#game_infos
-
+                        height: 150px
+                        border-bottom: 1px black solid
+                        padding-bottom: 10px
+                        display: flex
+                        flex-direction: row
+                        justify-content: space-between
+                        align-items: center
+                        strong
+                            font-size: 19px
+                            text-decoration-line: underline
+                        section#player-turn
+                            width: 35%
+                        section#ux-infos
+                            width: 60%
+                            ol
+                                li
+                                    text-align: start
+                                    margin: 2px 0
                 section#bottom
                     width: 100%
                     height: auto
