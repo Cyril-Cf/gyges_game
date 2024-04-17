@@ -58,8 +58,8 @@ pub fn footer() -> Html {
                                         <h2>{"Démarrage"}</h2>
                                         {
                                             match state.player_turn {
-                                                Player::PlayerTop => html!{<p>{"Le joueur du haut va commencer !"}</p>},
-                                                Player::PlayerBottom => html!{<p>{"Le joueur du bas va commencer !"}</p>}
+                                                Player::PlayerTop => html!{<p>{"Le joueur du haut"}<br/>{"va commencer !"}</p>},
+                                                Player::PlayerBottom => html!{<p>{"Le joueur du bas"}<br/>{"va commencer !"}</p>}
                                             }
                                         }
                                         {
