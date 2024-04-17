@@ -11,7 +11,7 @@
 - [ ] Add rules, header, and footer
 - [ ] Add external link to my Rust page (and the other way around)
 - [ ] Ask for some testing
-
+- [ ] Deploy!
 
 ## Nice to have
 - [ ] Show past moves for the whole game
