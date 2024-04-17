@@ -14,10 +14,10 @@ pub fn header() -> Html {
             {
                 match state.winning_player {
                     Some(Player::PlayerTop) => {
-                        html!{"Le joueur du haut a gagné !"}
+                        html!{<h2>{"Le joueur du haut a gagné !"}</h2>}
                     }
                     Some(Player::PlayerBottom) => {
-                        html!{"Le joueur du bas a gagné !"}
+                        html!{<h2>{"Le joueur du bas a gagné !"}</h2>}
                     }
                     _ => html!{}
                 }
