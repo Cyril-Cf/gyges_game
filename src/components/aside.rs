@@ -1,4 +1,4 @@
-use yew::{function_component, html, Html};
+use yew::{classes, function_component, html, Html};
 use yewdux::prelude::*;
 
 use crate::components::aside_game_preparing::AsideGamePreparing;
@@ -10,21 +10,33 @@ use crate::stores::game_state::GameState;
 #[function_component(Aside)]
 pub fn aside() -> Html {
     let (state, _) = use_store::<GameState>();
+    let mut class = classes!("");
+    if state.status == GameStatus::Finished {
+        class.push("hidden");
+    }
     html! {
-        <aside>
+        <aside {class}>
             {
                 match state.status {
                     GameStatus::Preparing(_) => html!{
-                        <>
-                            <AsideGamePreparing />
-                            <Rules />
-                        </>
+                        <div class="container">
+                            <section id="top">
+                                <AsideGamePreparing />
+                            </section>
+                            <section id="bottom">
+                                <Rules />
+                            </section>
+                        </div>
                     },
                     GameStatus::Playing => html!{
-                        <>
-                            <GameInfo />
-                            <Rules />
-                        </>
+                        <div class="container">
+                            <section id="top">
+                                <GameInfo />
+                            </section>
+                            <section id="bottom">
+                                <Rules />
+                            </section>
+                        </div>
                     },
                     GameStatus::Finished => html!{}
                 }

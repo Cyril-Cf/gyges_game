@@ -10,24 +10,14 @@ body
     main
         display: flex
         justify-content: center
-        align-items: center
-        section#game-preparation
-            h2
-                font-size: 18px
-            .container
-                display: flex
-                justify-content: space-between
-                width: 100%
-                div
-                    &:first-of-type
-                        width: 65%
-                    &:last-of-type
-                        width: 30%
+        align-items: top
         section#game
-            width: 570px
-            min-width: 570px
-            padding: 0 25px
+            width: 55%
+            display: flex
+            justify-content: center
             .grid-container
+                width: 570px
+                min-width: 570px
                 display: flex
                 align-items: center
                 justify-content: center
@@ -62,6 +52,58 @@ body
                 display: flex
                 justify-content: center
         aside
-            width: 30%
+            border: 1px black solid
+            width: 45%
+            .container
+                display: flex
+                flex-direction: column
+                section#top
+                    width: 100%
+                    section
+                        height: 150px
+                        border-bottom: 1px black solid
+                        padding-bottom: 10px
+                    section#game-preparation
+                        h2
+                            font-size: 18px
+                        .container
+                            display: flex
+                            justify-content: space-evenly
+                            flex-direction: row
+                            width: 100%
+                            div
+                                width: calc( (100% / 3) - 5px )
+                    section#game_infos
+
+                section#bottom
+                    width: 100%
+                    height: auto
+                    p
+                        padding: 15px
+                    .container
+                        margin-top: 25px
+                        display: flex
+                        justify-content: center
+                        align-items: top
+                        flex-direction: row
+                        align-items: center
+                        flex-wrap: wrap
+                        div
+                            width: 50%
+                            min-height: 280px
+                            display: flex
+                            flex-direction: column
+                            justify-content: start
+                            align-items: top
+                            h2
+                                margin: 0
+                            p
+                                margin: 0
+                                text-align: justify
+                                padding: 20px
     footer
+        margin-top: 50px
         height: 10vh
+
+.hidden
+    display: none

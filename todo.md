@@ -4,9 +4,8 @@
 
 
 - [x] Repair the tmp paths logic
-- [ ] Remove serde & serde_json
+- [ ] Remove serde & serde_json & gloo & gloo_console
 - [ ] Allow user pawn placements
-- [ ] Add missing replacement funtionality
 - [ ] Style full page
 - [ ] Add rules, header, and footer
 - [ ] Add external link to my Rust page (and the other way around)
@@ -14,6 +13,7 @@
 - [ ] Deploy!
 
 ## Nice to have
+- [ ] Add advance mode (replacement) funtionality
 - [ ] Show full path when hovering winning move
 - [ ] Show past moves for the whole game
 - [ ] Check on different monitor sizes and do your best on responsiveness

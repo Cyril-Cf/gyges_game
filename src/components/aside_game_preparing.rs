@@ -48,6 +48,8 @@ pub fn footer() -> Html {
                                         <button onclick={onclick_full_random.clone()}>{"Full random"}</button>
                                         <button onclick={onclick_random_player_top.clone()}>{"Random joueur du haut"}</button>
                                         <button onclick={onclick_random_player_bottom.clone()}>{"Random joueur du bas"}</button>
+                                    </div>
+                                    <div>
                                         <h2>{"Quel joueur va commencer ?"}</h2>
                                         <button onclick={onclick_chose_player_top.clone()}>{"Joueur du haut"}</button>
                                         <button onclick={onclick_chose_player_bottom.clone()}>{"Joueur du bas"}</button>
