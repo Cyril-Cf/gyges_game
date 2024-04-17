@@ -55,18 +55,23 @@ impl GameState {
                 self.board
                     .update_possible_moves(&square_target, &self.player_turn);
             } else {
-                self.board.clear_all_squares_can_move_to();
-                self.board.toggle_pawn_highlight(&square_target);
                 match &self.pawn_to_move {
                     Some(p)
                         if p.line_index == square_target.line_index
                             && p.pawn_index == square_target.pawn_index =>
                     {
+                        self.board.clear_all_squares_can_move_to();
+                        self.board.toggle_pawn_highlight(&square_target);
                         self.board.remove_possible_moves();
                         self.board.remove_temp_moves();
                         self.pawn_to_move = None;
                     }
                     Some(_) => {
+                        if let Some(_) = square_target.pawn {
+                            return;
+                        }
+                        self.board.clear_all_squares_can_move_to();
+                        self.board.toggle_pawn_highlight(&square_target);
                         self.board
                             .move_pawn(&self.pawn_to_move.unwrap(), &square_target);
                         self.switch_player();
