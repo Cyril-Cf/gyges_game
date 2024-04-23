@@ -1,0 +1,23 @@
+# Étape de construction
+FROM rust:latest AS builder
+
+# Définition du répertoire de travail
+WORKDIR /app
+
+# Copie des fichiers du projet
+COPY . .
+
+# Compilation de l'application WebAssembly
+RUN cargo install --path .
+
+# Étape de déploiement
+FROM nginx:latest
+
+# Copie de l'application compilée dans Nginx
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Exposition du port 80
+EXPOSE 80
+
+# Commande de démarrage de Nginx
+CMD ["nginx", "-g", "daemon off;"]
